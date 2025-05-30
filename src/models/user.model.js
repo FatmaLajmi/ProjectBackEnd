@@ -1,6 +1,6 @@
 // Import necessary libraries
 import mongoose from "mongoose";                     // MongoDB ODM (Object Data Modeling) library
-import isEmail from "validator/lib/isEmail";         // Validator to check for proper email format
+import isEmail from "validator/lib/isEmail.js";         // Validator to check for proper email format
 
 // Define the schema for a user
 const userSchema = new mongoose.Schema({
@@ -33,8 +33,6 @@ const userSchema = new mongoose.Schema({
   }
 });
 
-// Create a unique index on the email field at the database level
-userSchema.index({ email: 1 }, { unique: true });
 
 // Export the model to use it elsewhere in your project
 export default mongoose.model("User", userSchema);
