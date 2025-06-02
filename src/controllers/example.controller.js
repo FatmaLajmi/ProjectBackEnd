@@ -9,7 +9,7 @@ const createExample = async (req, res) => {
         const existingExample = await Example.findOne({ name: req.body.name });
 
         if (existingExample) {
-            return handleError(res, null, "Example with this name already exists", 409); // 409 Conflict
+            return handleError(res, null, "Example with this name already exists", 409); 
         }
 
         const newExample = new Example(req.body);

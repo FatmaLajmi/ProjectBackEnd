@@ -4,16 +4,16 @@ import mongoose from "mongoose";
 // Define the schema for a category
 const categorySchema = new mongoose.Schema({
 
-  // Name field of the category
+  
   name: {
-    type: String,           // Must be a string
-    required: true,         // This field is mandatory
-    unique: true            // No two categories can have the same name
+    type: String,           
+    required: true,         
+    unique: true            
   },
 
-  // Optional description of the category
+  
   description: {
-    type: String,           // Should be a string if provided
+    type: String,           
   },
 });
 
