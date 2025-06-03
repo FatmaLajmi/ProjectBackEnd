@@ -1,0 +1,137 @@
+import Product from '../models/product.model.js'
+import handleError from '../middlewares/errors/handleError.js'
+import Category from "../models/category.model.js";
+
+// Product to create a new product
+const createProduct = async (req, res) => {
+    try {
+
+        //checking price and stock must be positive
+        if (req.body.price < 0) {
+            return handleError(res, null, "Product's price must be positive", 409);
+        }
+
+        if (req.body.stock < 0) {
+            return handleError(res, null, "Product's stock must be positive", 409);
+        }
+
+        //checking if category exists
+        const existingCategory = await Category.findById(req.body.category);
+
+        if (!existingCategory) {
+            return handleError(res, null, "The specified category does not exist", 400);
+        }
+
+        const newProduct = new Product(req.body);
+        await newProduct.save();
+        return res.status(201).json(newProduct);
+
+    } catch (error) {
+        handleError(res, error, "Error in creating product", 500);
+    }
+};
+
+// Get a single Product by ID
+const getOneProduct = async (req, res) => {
+    try {
+        const product = await Product.findById(req.params.id);
+
+        if (!product) {
+            return handleError(res, null, "No product found", 404); // 404 Not Found
+        }
+
+        return res.status(200).json( product );
+    } catch (error) {
+        handleError(res, error, "Error in getting one product", 500); // 500 server error
+    }
+};
+
+// Get all productss
+const getAllProduct = async (req, res) => {
+    try {
+        const productss = await Product.find();
+
+        if (productss.length === 0) {
+            return res.status(204).send(); // No content
+        }
+
+        return res.status(200).json(productss);
+    } catch (error) {
+        handleError(res, error, "Error in getting all productss", 500);
+    }
+};
+
+// Update an product by ID
+const updateProduct = async (req, res) => {
+    try {
+
+        //checking price and stock must be positive
+        if (req.body.price < 0) {
+            return handleError(res, null, "Product's price must be positive", 409);
+        }
+
+        if (req.body.stock < 0) {
+            return handleError(res, null, "Product's stock must be positive", 409);
+        }
+
+        //checking if category exists
+        const existingCategory = await Category.findById(req.body.category);
+
+        if (!existingCategory) {
+            return handleError(res, null, "The specified category does not exist", 400);
+        }
+
+        const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+        if (!product) {
+            return handleError(res, null, "No data found", 404);
+        }
+
+        return res.status(200).json( product );
+    } catch (error) {
+        handleError(res, error, "Error in updating product", 500);
+    }
+};
+
+// Delete an product by ID
+const deleteProduct = async (req, res) => {
+    try {
+        const product = await Product.findByIdAndDelete(req.params.id);
+
+        if (!product) {
+            return handleError(res, null, "No product found", 404);
+        }
+
+        return res.status(200).json("Product deleted" );
+    } catch (error) {
+        handleError(res, error, "Error in deleting product", 500);
+    }
+};
+
+const getProductByCategory = async (req, res) => {
+    try {
+
+        const categoryId = req.query.Category; 
+
+        const products = await Product.find({ category: categoryId });
+
+         if (products.length === 0) {
+            return res.status(204).send(); // No content
+        }
+
+        return res.status(200).json(products);
+    } catch (error) {
+        handleError(res, error, "Error in getting products by category", 500);
+    }
+};
+
+const ProductController = {
+    createProduct,
+    getOneProduct,
+    getAllProduct,
+    updateProduct,
+    deleteProduct,
+    getProductByCategory
+}
+
+export default ProductController

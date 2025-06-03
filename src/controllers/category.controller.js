@@ -1,5 +1,6 @@
 import Category from '../models/category.model.js'
 import handleError from '../middlewares/errors/handleError.js'
+import Product from '../models/product.model.js'
 
 // Category to create a new category
 const createCategory = async (req, res) => {
@@ -19,7 +20,6 @@ const createCategory = async (req, res) => {
     }
 };
 
-// Get a single category by ID
 const getOneCategory = async (req, res) => {
     try {
         const category = await Category.findById(req.params.id);
@@ -34,7 +34,6 @@ const getOneCategory = async (req, res) => {
     }
 };
 
-// Get all categories
 const getAllCategory = async (req, res) => {
     try {
         const categories = await Category.find();
@@ -49,7 +48,6 @@ const getAllCategory = async (req, res) => {
     }
 };
 
-// Update an category by ID
 const updateCategory = async (req, res) => {
     try {
         // Check if another category already has the same name
@@ -74,14 +72,22 @@ const updateCategory = async (req, res) => {
     }
 };
 
-// Delete an category by ID
 const deleteCategory = async (req, res) => {
     try {
+        //check if category is used in any product before deleting
+        const products = await Product.find({ category: req.params.id });
+
+        if (products.length > 0){
+            return handleError(res, null, "Must delete product before category", 400);
+        }
+
         const category = await Category.findByIdAndDelete(req.params.id);
 
         if (!category) {
             return handleError(res, null, "No category found", 404);
         }
+
+        
 
         return res.status(200).json("Category deleted" );
     } catch (error) {
