@@ -2,11 +2,9 @@ import Product from '../models/product.model.js'
 import handleError from '../middlewares/errors/handleError.js'
 import Category from "../models/category.model.js";
 
-// Product to create a new product
 const createProduct = async (req, res) => {
     try {
 
-        //checking price and stock must be positive
         if (req.body.price < 0) {
             return handleError(res, null, "Product's price must be positive", 409);
         }
@@ -15,7 +13,6 @@ const createProduct = async (req, res) => {
             return handleError(res, null, "Product's stock must be positive", 409);
         }
 
-        //checking if category exists
         const existingCategory = await Category.findById(req.body.category);
 
         if (!existingCategory) {
@@ -31,7 +28,6 @@ const createProduct = async (req, res) => {
     }
 };
 
-// Get a single Product by ID
 const getOneProduct = async (req, res) => {
     try {
         const product = await Product.findById(req.params.id);
@@ -46,7 +42,6 @@ const getOneProduct = async (req, res) => {
     }
 };
 
-// Get all productss
 const getAllProduct = async (req, res) => {
     try {
         const productss = await Product.find();
@@ -61,7 +56,6 @@ const getAllProduct = async (req, res) => {
     }
 };
 
-// Update an product by ID
 const updateProduct = async (req, res) => {
     try {
 
@@ -93,7 +87,6 @@ const updateProduct = async (req, res) => {
     }
 };
 
-// Delete an product by ID
 const deleteProduct = async (req, res) => {
     try {
         const product = await Product.findByIdAndDelete(req.params.id);
@@ -111,13 +104,13 @@ const deleteProduct = async (req, res) => {
 const getProductByCategory = async (req, res) => {
     try {
 
-        const categoryId = req.query.Category; 
+        const categoryId = req.query.category; 
 
         const products = await Product.find({ category: categoryId });
 
-         if (products.length === 0) {
-            return res.status(204).send(); // No content
-        }
+        //  if (products.length === 0) {
+        //     return res.status(204).send(); // No content
+        // }
 
         return res.status(200).json(products);
     } catch (error) {

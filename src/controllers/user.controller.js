@@ -1,8 +1,6 @@
-// Import model
 import User from '../models/user.model.js'
 import handleError from '../middlewares/errors/handleError.js'
 
-// User to create a new User
 const createUser = async (req, res) => {
     try {
         // Check if an User with the same name already exists
@@ -22,7 +20,6 @@ const createUser = async (req, res) => {
     }
 };
 
-// Get all user
 const getAllUser = async (req, res) => {
     try {
         const users = await User.find();
@@ -37,7 +34,6 @@ const getAllUser = async (req, res) => {
     }
 };
 
-// Get a single user by ID
 const getOneUser = async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
@@ -52,7 +48,6 @@ const getOneUser = async (req, res) => {
     }
 };
 
-// Update an user by ID
 const updateUser = async (req, res) => {
     try {
         // Check if another user already has the same name/email
@@ -82,7 +77,6 @@ const updateUser = async (req, res) => {
     }
 };
  
-// Delete a user by ID
 const deleteUser = async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);

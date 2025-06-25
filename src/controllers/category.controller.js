@@ -2,10 +2,8 @@ import Category from '../models/category.model.js'
 import handleError from '../middlewares/errors/handleError.js'
 import Product from '../models/product.model.js'
 
-// Category to create a new category
 const createCategory = async (req, res) => {
     try {
-        // Check if an Category with the same name already exists
         const existingCategory = await Category.findOne({ name: req.body.name });
 
         if (existingCategory) {
@@ -75,9 +73,9 @@ const updateCategory = async (req, res) => {
 const deleteCategory = async (req, res) => {
     try {
         //check if category is used in any product before deleting
-        const products = await Product.find({ category: req.params.id });
+        const product = await Product.findOne({ category: req.params.id });
 
-        if (products.length > 0){
+        if (product){
             return handleError(res, null, "Must delete product before category", 400);
         }
 
