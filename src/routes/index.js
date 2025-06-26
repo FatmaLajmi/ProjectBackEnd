@@ -9,6 +9,7 @@ import isAuth from '../middlewares/auth.middlewear.js';
 import isAdmin from '../middlewares/admin.middlewear.js';
 
 const router = Router();
+
 router.use('/examples', exampleRoutes);
 router.use('/users',isAuth,isAdmin, UserRoutes);
 router.use('/categories', CategoryRoutes);
