@@ -5,13 +5,15 @@ import CategoryRoutes from './category.route.js';
 import ProductsRoutes from './product.route.js';
 import OrderRoutes from './order.route.js';
 import authRoutes from './authentification.route.js'
+import isAuth from '../middlewares/auth.middlewear.js';
+import isAdmin from '../middlewares/admin.middlewear.js';
 
 const router = Router();
 router.use('/examples', exampleRoutes);
-router.use('/users', UserRoutes);
+router.use('/users',isAuth,isAdmin, UserRoutes);
 router.use('/categories', CategoryRoutes);
 router.use('/products', ProductsRoutes);
-router.use('/orders', OrderRoutes);
+router.use('/orders',isAuth,isAdmin, OrderRoutes);
 router.use('/authentification',authRoutes);
 
 export default router;
