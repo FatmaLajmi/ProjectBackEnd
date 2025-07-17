@@ -12,7 +12,6 @@ const signUp = async (req, res) => {
 try {
     const { name, email, password, isAdmin } = req.body;
     const existingUser = await User.findOne({ email });
-    console.log("existingUser", existingUser);
     if (existingUser) {
         return handleError(res, null, "Email already exists", 409);
     }
@@ -32,6 +31,7 @@ try {
     })
 }
 catch (error) {
+     
     handleError(res, error,"Error in SignUp", 500);
 }
 };

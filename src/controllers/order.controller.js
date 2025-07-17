@@ -29,12 +29,11 @@ const createOrder = async (req, res) => {
                     throw new Error("The order must have at least one product");
                 }
 
-                return product.price * item.quantity; // return price for this product
+                return product.price * item.quantity; 
             }
             )
         );
 
-        // Sum all prices to get totalPrice
         const totalPrice = results.reduce((sum, price) => sum + price, 0);
         req.body.totalPrice = totalPrice;
 
@@ -49,10 +48,9 @@ const createOrder = async (req, res) => {
 
 const getAllOrder = async (req, res) => {
     try {
-        const orders = await Order.find();
-
+        const orders = await Order.find().populate('user','name').populate('products.product', 'name'); 
         if (orders.length === 0) {
-            return res.status(204).send(); // No content
+            return res.status(204).send(); 
         }
 
         return res.status(200).json(orders);
@@ -66,12 +64,12 @@ const getOneOrder = async (req, res) => {
         const order = await Order.findById(req.params.id);
 
         if (!order) {
-            return handleError(res, null, "No order found", 404); // 404 Not Found
+            return handleError(res, null, "No order found", 404); 
         }
 
         return res.status(200).json( order );
     } catch (error) {
-        handleError(res, error, "Error in getting one order", 500); // 500 server error
+        handleError(res, error, "Error in getting one order", 500); 
     }
 };
 
@@ -98,12 +96,11 @@ const updateOrder = async (req, res) => {
                     throw new Error("The order must have at least one product");
                 }
 
-                return product.price * item.quantity; // return price for this product
+                return product.price * item.quantity; 
             }
             )
         );
 
-        // Sum all prices to get totalPrice
         const totalPrice = results.reduce((sum, price) => sum + price, 0);
         req.body.totalPrice = totalPrice;
 
@@ -127,7 +124,7 @@ const deleteOrder = async (req, res) => {
             return handleError(res, null, "No order found", 404);
         }
 
-        if (order.status !== validStatuses["CANCELED"]) {
+        if (order.status !== "canceled") {
             return handleError(res, null, "Cannot delete this order, status must be 'canceled'", 400);
         }
 
@@ -137,6 +134,43 @@ const deleteOrder = async (req, res) => {
     } catch (error) {
         handleError(res, error, "Error in deleting order", 500);
     }
+}
+
+const getOrderByStatus = async (req, res) => {
+  try {
+    const stat = req.query.status;
+
+    if (!validStatuses.includes(stat)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    const orders = await Order.find({ status: stat });
+
+    if (orders.length === 0) {
+      return res.status(200).json({ message: `No orders ${stat}` });
+    }
+
+    return res.status(200).json(orders);
+
+  } catch (error) {
+    handleError(res, error, "Error in getting orders by status", 500);
+  }
+}
+
+const getOrderByUser = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: 'Unauthorized: No user found' });
+    }
+
+    const userId = req.user.id;
+    const orders = await Order.find({ user: userId }).populate('user', 'name');
+
+    return res.status(200).json(orders);
+
+  } catch (error) {
+    handleError(res, error, "Error in getting orders by user", 500);
+  }
 };
 
 const orderController = {
@@ -144,7 +178,9 @@ const orderController = {
     getOneOrder,
     getAllOrder,
     updateOrder,
-    deleteOrder
+    deleteOrder,
+    getOrderByUser,
+    getOrderByStatus
 }
 
 export default orderController

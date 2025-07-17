@@ -33,33 +33,31 @@ const getOneProduct = async (req, res) => {
         const product = await Product.findById(req.params.id);
 
         if (!product) {
-            return handleError(res, null, "No product found", 404); // 404 Not Found
+            return handleError(res, null, "No product found", 404); 
         }
 
         return res.status(200).json( product );
     } catch (error) {
-        handleError(res, error, "Error in getting one product", 500); // 500 server error
+        handleError(res, error, "Error in getting one product", 500); 
     }
 };
 
 const getAllProduct = async (req, res) => {
     try {
-        const productss = await Product.find();
+        const productss = await Product.find().populate('category','name');
 
         if (productss.length === 0) {
-            return res.status(204).send(); // No content
+            return res.status(204).send(); 
         }
 
         return res.status(200).json(productss);
     } catch (error) {
-        handleError(res, error, "Error in getting all productss", 500);
+        handleError(res, error, "Error in getting all products", 500);
     }
 };
 
 const updateProduct = async (req, res) => {
     try {
-
-        //checking price and stock must be positive
         if (req.body.price < 0) {
             return handleError(res, null, "Product's price must be positive", 409);
         }
@@ -68,7 +66,6 @@ const updateProduct = async (req, res) => {
             return handleError(res, null, "Product's stock must be positive", 409);
         }
 
-        //checking if category exists
         const existingCategory = await Category.findById(req.body.category);
 
         if (!existingCategory) {
@@ -106,7 +103,7 @@ const getProductByCategory = async (req, res) => {
 
         const categoryId = req.query.category; 
 
-        const products = await Product.find({ category: categoryId });
+        const products = await Product.find({ category: categoryId }).populate('category','name');
 
         //  if (products.length === 0) {
         //     return res.status(204).send(); // No content

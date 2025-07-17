@@ -4,7 +4,10 @@ import dotenv from "dotenv";
 import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import routes from './routes/index.js'
+import routes from './routes/index.js';
+import './models/category.model.js';
+import './models/product.model.js';
+
 
 // Environment configuration
 dotenv.config();

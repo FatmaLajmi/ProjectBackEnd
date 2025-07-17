@@ -1,14 +1,16 @@
 import express from 'express';
-
-// Import controllers and middlewares
 import UserControllers from '../controllers/user.controller.js'
+import OrderControllers from '../controllers/order.controller.js'
+import isAuth from '../middlewares/auth.middlewear.js';
+import isAdmin from '../middlewares/admin.middlewear.js';
+
 const router = express.Router();
 
-// Define routes
-router.post('/', UserControllers.createUser);
-router.get('/', UserControllers.getAllUser);
-router.get('/:id', UserControllers.getOneUser);
-router.put('/:id', UserControllers.updateUser);
-router.delete('/:id', UserControllers.deleteUser);
+router.post('/',isAuth,isAdmin, UserControllers.createUser);
+router.get('/orders',OrderControllers.getOrderByUser);
+router.get('/',isAuth,isAdmin, UserControllers.getAllUser);
+router.get('/:id',isAuth,isAdmin, UserControllers.getOneUser);
+router.put('/:id',isAuth,isAdmin, UserControllers.updateUser);
+router.delete('/:id',isAuth,isAdmin, UserControllers.deleteUser);
 
 export default router;

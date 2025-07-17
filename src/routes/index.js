@@ -11,10 +11,10 @@ import isAdmin from '../middlewares/admin.middlewear.js';
 const router = Router();
 
 router.use('/examples', exampleRoutes);
-router.use('/users',isAuth,isAdmin, UserRoutes);
+router.use('/users', UserRoutes);
 router.use('/categories', CategoryRoutes);
 router.use('/products', ProductsRoutes);
-router.use('/orders',isAuth,isAdmin, OrderRoutes);
+router.use('/orders', OrderRoutes);
 router.use('/authentification',authRoutes);
 
 export default router;

@@ -1,15 +1,14 @@
 import User from '../models/user.model.js'
 import handleError from '../middlewares/errors/handleError.js'
+import Order from '../models/order.model.js';
 
 const createUser = async (req, res) => {
     try {
-        // Check if an User with the same name already exists
         const existingUser = await User.findOne({ name: req.body.name });
-        // Check if an User with the same email already exists
         const existingEmail = await User.findOne({ email: req.body.email });
 
         if (existingUser || existingEmail) {
-            return handleError(res, null, "User with this name/email already exists", 409); // 409 Conflict
+            return handleError(res, null, "User with this name/email already exists", 409);
         }
 
         const newUser = new User(req.body);
@@ -25,7 +24,7 @@ const getAllUser = async (req, res) => {
         const users = await User.find();
 
         if (users.length === 0) {
-            return res.status(204).send(); // No content
+            return res.status(204).send();
         }
 
         return res.status(200).json(users);
@@ -50,10 +49,9 @@ const getOneUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     try {
-        // Check if another user already has the same name/email
         const existingUser = await User.findOne({
             name: req.body.name,
-            _id: { $ne: req.params.id } // Exclude the current user
+            _id: { $ne: req.params.id } 
         });
 
         const existingEmail = await User.findOne({
@@ -79,6 +77,14 @@ const updateUser = async (req, res) => {
  
 const deleteUser = async (req, res) => {
     try {
+        const order = await Order.findOne ({ user: req.params.id });
+        if (order){
+            if(order.status==="shipped"){
+                return handleError(res, null, "This user has already a shipped order, you cannot delete user before delivery", 400);
+            }else {
+                await Order.findByIdAndDelete(order._id);
+            }
+        }
         const user = await User.findByIdAndDelete(req.params.id);
 
         if (!user) {
